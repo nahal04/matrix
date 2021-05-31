@@ -1,4 +1,4 @@
-const calculateRemainingTime = (date) => {
+const checkRemainingTime = (date) => {
     const deadline = new Date(date);
     const current = new Date();
     const remainingTime = deadline - current;
@@ -6,16 +6,16 @@ const calculateRemainingTime = (date) => {
         return 'Deadline Crossed';
     }
 
-    const remainingMinutes = Math.floor(remainingTime / 60000);
+    const remainingMinutes = Math.round(remainingTime / 60000);
     if (remainingMinutes <= 0) {
-        return `${Math.floor(remainingTime / 1000)}s remaining`
+        return `${Math.round(remainingTime / 1000)}s remaining`
     }
     if (remainingMinutes > 59) {
-        const remainingHours = Math.floor(remainingMinutes / 60);
+        const remainingHours = Math.round(remainingMinutes / 60);
         if (remainingHours > 23) {
-            const remainingDays = Math.floor(remainingHours / 24);
+            const remainingDays = Math.round(remainingHours / 24);
             if (remainingDays > 364) {
-                const remainingYears = Math.floor(remainingDays / 365);
+                const remainingYears = Math.round(remainingDays / 365);
                 return `${remainingYears}y left`;
             }
             return `${remainingDays}d left`;
@@ -25,4 +25,4 @@ const calculateRemainingTime = (date) => {
     return `${remainingMinutes}min left`
 };
 
-export default calculateRemainingTime;
+export default checkRemainingTime;

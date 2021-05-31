@@ -1,6 +1,13 @@
 import { useContext, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import Accordion from 'react-bootstrap/Accordion';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 import { v4 as uuidv4 } from 'uuid';
+import checkRemainingTime from "../functions/check-remaining-time";
 import TodoContext from "../store/todo-context";
 
 const AddTodo = (props) => {
@@ -35,6 +42,7 @@ const AddTodo = (props) => {
       event.stopPropagation();
       setValid(true);
     } else {
+      const remainingTime = checkRemainingTime(deadline);
       todoCtx.addTodo({
         id: uuidv4(),
         title,
@@ -42,6 +50,9 @@ const AddTodo = (props) => {
         deadline,
         important,
         finished: false,
+        deadlineCrossed: false,
+        remainingTime,
+        dateAdded: new Date(),
       });
       setTitle('');
       setDescription('');
@@ -51,7 +62,16 @@ const AddTodo = (props) => {
     }
     }
   return (
-    <Container>
+    <Container className="p-4">
+    <Accordion>
+  <Card>
+    <Card.Header className="text-center">
+      <Accordion.Toggle as={Button} variant="success" eventKey="0">
+        Add new Task 
+      </Accordion.Toggle>
+    </Card.Header>
+    <Accordion.Collapse eventKey="0">
+      <Card.Body>
       <Row className="justify-content-center mt-4 mb-4">
         <Col lg={6} sm={12}>
           <Form noValidate validated={valid} onSubmit={submitHandler} className="text-left d-flex flex-column">
@@ -117,6 +137,10 @@ const AddTodo = (props) => {
           </Form>
         </Col>
       </Row>
+      </Card.Body>
+    </Accordion.Collapse>
+  </Card>
+</Accordion>
     </Container>
   );
 };

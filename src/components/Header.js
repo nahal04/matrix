@@ -18,7 +18,13 @@ const Header = () => {
             <Nav.Link>Importants</Nav.Link>
           </LinkContainer>
           <LinkContainer to="/finished">
-            <Nav.Link href="/finished">Finished</Nav.Link>
+            <Nav.Link>Finished</Nav.Link>
+          </LinkContainer>
+          <LinkContainer to="/failed">
+            <Nav.Link>Failed</Nav.Link>
+          </LinkContainer>
+          <LinkContainer to="/perfomance">
+            <Nav.Link>Perfomance</Nav.Link>
           </LinkContainer>
         </Nav>
       </Navbar.Collapse>
