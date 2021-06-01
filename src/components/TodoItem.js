@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Button, Card, Col } from "react-bootstrap";
 import checkRemainingTime from "../functions/check-remaining-time";
 import TodoContext from "../store/todo-context";
@@ -15,30 +15,26 @@ const TodoItem = ({
   remainingTimeState,
   deadlineCrossed,
 }) => {
-  const [remainingTime, setRemainingTime] = useState(remainingTimeState);
   const todoCtx = useContext(TodoContext);
   const { remainingTimeHandler } = todoCtx;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      console.log("timer ran");
-      setRemainingTime(checkRemainingTime(deadline))
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [deadline]);
-
-  useEffect(() => {
-      console.log("timer2 ran");
-      if (!finished && !deadlineCrossed) {
-        remainingTimeHandler(checkRemainingTime(deadline), id);
-      }
-  }, [finished, deadlineCrossed, remainingTimeHandler,deadline, id]);
+    if (!deadlineCrossed && !finished) {
+      const timer = setInterval(() => {
+        const remainingTime = checkRemainingTime(deadline);
+        if (remainingTime !== remainingTimeState) {
+          remainingTimeHandler(remainingTime, id);
+        }
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [deadline, id, remainingTimeHandler, deadlineCrossed, finished, remainingTimeState]);
 
   const deleteTodoHandler = () => {
     showModal(true);
     modalProps({
-      title: "Delete Task",
-      body: "Are you sure you want to delete this task ?",
+      title: "Caution",
+      body: "Once deleted, these tasks won't be considered for perfomance analysis. Are you sure you want to delete this task ?",
       button: "Delete",
       buttonVariant: "danger",
       action: () => todoCtx.removeTodo(id),
@@ -92,7 +88,7 @@ const TodoItem = ({
           )}
         </Card.Body>
         <Card.Footer className={footerColor}>
-          {!finished ? remainingTime : "Finished"}
+          {!finished ? remainingTimeState : "Finished"}
         </Card.Footer>
       </Card>
     </Col>

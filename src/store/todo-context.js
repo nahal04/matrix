@@ -16,7 +16,15 @@ export const TodoProvider = ({ children }) => {
     useEffect(() => {
         const localTodos = JSON.parse(localStorage.getItem('todos'));
         if (localTodos && localTodos.length > 0) {
-            setTodos(localTodos);
+            setTodos(localTodos.map(todo => {
+                return {
+                    ...todo,
+                    deadline: new Date(todo.deadline),
+                    dateAdded: new Date(todo.dateAdded),
+                    dateOfFinish: todo.dateOfFinish && new Date(todo.dateOfFinish),
+                    dateOfFail: todo.dateOfFail && new Date(todo.dateOfFail),
+                }
+            }));
         }
     }, []);
 
@@ -36,14 +44,14 @@ export const TodoProvider = ({ children }) => {
     };
 
     const finishTodo = todoId => {
-        setTodos(prevTodos => prevTodos.map(todo => todoId === todo.id ? {...todo, finished: !todo.finished } : todo));
-        localStorage.setItem('todos', JSON.stringify(todos.map(todo => todoId === todo.id ? {...todo, finished: !todo.finished } : todo)));
+        setTodos(prevTodos => prevTodos.map(todo => todoId === todo.id ? {...todo, finished: !todo.finished, dateOfFinish: !todo.finished ? new Date() : null } : todo));
+        localStorage.setItem('todos', JSON.stringify(todos.map(todo => todoId === todo.id ? {...todo, finished: !todo.finished, dateOfFinish: !todo.finished ? new Date() : null  } : todo)));
     }
 
     const remainingTimeHandler = (remainingTime, todoId) => {
         if (remainingTime === "Deadline Crossed") {
-            setTodos(todos => todos.map(todo => todo.id === todoId ? { ...todo, deadlineCrossed: true, remainingTime: 'Deadline Crossed' } : todo));
-            localStorage.setItem('todos', JSON.stringify(todos.map(todo => todo.id === todoId ? { ...todo, deadlineCrossed: true, remainingTime } : todo)));
+            setTodos(todos => todos.map(todo => todo.id === todoId ? { ...todo, deadlineCrossed: true, remainingTime: 'Deadline Crossed', dateOfFail: new Date() } : todo));
+            localStorage.setItem('todos', JSON.stringify(todos.map(todo => todo.id === todoId ? { ...todo, deadlineCrossed: true, remainingTime, dateOfFail: new Date() } : todo)));
         } else {
             setTodos(todos => todos.map(todo => todo.id === todoId ? { ...todo, remainingTime } : todo));
             localStorage.setItem('todos', JSON.stringify(todos.map(todo => todo.id === todoId ? { ...todo, remainingTime } : todo)));

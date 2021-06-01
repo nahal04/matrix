@@ -7,7 +7,8 @@ const TodoList = ({ showModal, modalProps, title, todos, emptyHandler }) => {
   let renderTodos = <p className="text-center mt-5">{emptyHandler}</p>;
 
   if (todos.length !== 0) {
-    renderTodos = todos.map((todo) => {
+    const sorted = todos.sort((a, b) => a.deadline - b.deadline);
+    renderTodos = sorted.map((todo) => {
       return (
         <TodoItem
           showModal={showModal}
